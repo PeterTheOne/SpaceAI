@@ -1,92 +1,96 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package mygame;
 
-import com.jme3.app.SimpleApplication;
-import com.jme3.asset.plugins.ZipLocator;
-import com.jme3.font.BitmapText;
-import com.jme3.light.DirectionalLight;
-import com.jme3.material.Material;
-import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
-import com.jme3.system.AppSettings;
 import com.jme3.math.Quaternion;
 import java.util.ArrayList;
 
 /**
  *
  * @author Luciph3r
+ * @author PeterTheOne
  */
 public class Spaceship {
+    
+    private enum MoveState {
+        STOP, DIRECTION, TARGET
+    };
 
     private Spatial shipModel;
-    private enum moveState{DIRECTION,TARGET};
-    moveState MOVESTATE;
+    private MoveState moveState;
     private Vector3f velo;
     private Vector3f dest;
-    private ArrayList<Spaceship> seenShips;
     private ShipAI computer;
+    private ArrayList<Spaceship> seenShips;
     
-   
+    private final int MAXSPEED = 3;
+
     public Spaceship(Spatial shipModel) {
         this.shipModel = shipModel;
         this.velo = new Vector3f();
         this.dest = new Vector3f();
-        MOVESTATE = moveState.DIRECTION;
-        computer = new ShipAI(this);
-        seenShips = new ArrayList<Spaceship>();
+        this.moveState = MoveState.STOP;
+        this.computer = new ShipAI(this);
+        this.seenShips = new ArrayList<Spaceship>();
     }
-    
 
     public void update(float tpf) {
-        if(MOVESTATE == moveState.TARGET){
-         if (this.getPos().subtract(dest).length()> 0.01f) {
-            this.velo = dest.subtract(getPos()).normalize().mult(3);
+        if (moveState == MoveState.TARGET) {
+            if (this.getPos().subtract(dest).length() > 0.01f) {
+                this.velo = dest.subtract(getPos()).normalize().mult(MAXSPEED);
 
-        }else{
-            velo = Vector3f.ZERO;
+            } else {
+                this.stop();
+            }
         }
-        }
+        
         this.computer.think();
-         this.shipModel.move(velo.mult(tpf ));
-       
-    
-
-
-      
+        
+        this.shipModel.move(velo.mult(tpf));
     }
-    public void moveDirection(Vector3f direction){
-        this.MOVESTATE = moveState.DIRECTION;
-        this.velo = direction.normalize();
-           this.shipModel.lookAt(velo.add(shipModel.getWorldTranslation()).negate(), Vector3f.UNIT_Y);
+
+    public void stop() {
+        moveState = MoveState.STOP;
+        velo = Vector3f.ZERO;
     }
+
+    public void moveDirection(Vector3f direction) {
+        //TODO: fix, ship only flies in one direction
+        if (direction.equals(Vector3f.ZERO)) {
+            this.stop();
+            return;
+        }
+        this.moveState = MoveState.DIRECTION;
+        this.velo = direction.normalize().mult(MAXSPEED);
+        this.shipModel.lookAt(velo.add(shipModel.getWorldTranslation()).negate(), Vector3f.UNIT_Y);
+    }
+
     public void moveTo(Vector3f dest) {
-         this.MOVESTATE = moveState.TARGET;
-                this.shipModel.lookAt(dest.negate(), Vector3f.UNIT_Y);
+        this.moveState = MoveState.TARGET;
+        this.shipModel.lookAt(dest.negate(), Vector3f.UNIT_Y);
     }
-    public Vector3f getPos(){
-      
+
+    public Vector3f getPos() {
         return this.shipModel.getWorldTranslation();
     }
-    public Quaternion getOrientation(){
-          return this.shipModel.getLocalRotation();
+
+    public Quaternion getOrientation() {
+        return this.shipModel.getLocalRotation();
     }
-    public void addSeenShip (Spaceship ship){
+
+    public void addSeenShip(Spaceship ship) {
         this.seenShips.add(ship);
     }
-    public void clearSeenShips(){
+
+    public void clearSeenShips() {
         this.seenShips.clear();
     }
-    public boolean seeShip(){
+
+    public boolean seeShip() {
         return !this.seenShips.isEmpty();
     }
-    public ArrayList<Spaceship> getSeenShips(){
+
+    public ArrayList<Spaceship> getSeenShips() {
         return this.seenShips;
     }
-    
 }
