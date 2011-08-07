@@ -36,8 +36,8 @@ public class Game extends SimpleApplication {
 
         // Create spaceships
         for (int i = 0; i < 2; i++) {
-            Vector3f randomStartPosition = new Vector3f((float) Math.random() * 50, 
-                    (float) Math.random() * 50, (float) Math.random() * 50);
+            Vector3f randomStartPosition = new Vector3f((float) Math.random() * 100, 
+                    (float) Math.random() * 100, (float) Math.random() * 100);
             Spaceship ship = newShip(randomStartPosition);
             ships.add(ship);
         }
@@ -72,7 +72,7 @@ public class Game extends SimpleApplication {
             Spaceship ship = ships.get(i);
             for (int j = i + 1; j < ships.size(); j++) {
                 Spaceship ship2 = ships.get(j);
-                if (ship2.getPos().subtract(ship.getPos()).length() < 5) {
+                if (ship2.getPos().subtract(ship.getPos()).length() < 100) {
                     ship.addSeenShip(ship2);
                     ship2.addSeenShip(ship);
                 }

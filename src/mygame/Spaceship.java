@@ -73,12 +73,21 @@ public class Spaceship {
             this.stop();
             return;
         }
+        this.focusTarget(dest);
         this.moveState = MoveState.TARGET;
-        this.shipModel.lookAt(dest.negate(), Vector3f.UNIT_Y);
+        this.dest = dest;
+        
+    }
+    public void moveTo(Spaceship ship){
+        Vector3f coordinates = ship.getPos();
+        moveTo(coordinates);
+    }
+    public void focusTarget(Vector3f dest){
+        this.shipModel.lookAt(this.getPos().subtract(dest).add(this.getPos()), Vector3f.UNIT_Y);
     }
 
     public Vector3f getPos() {
-        return this.shipModel.getWorldTranslation();
+        return this.shipModel.getLocalTranslation();
     }
 
     public Quaternion getOrientation() {
@@ -100,4 +109,5 @@ public class Spaceship {
     public ArrayList<Spaceship> getSeenShips() {
         return this.seenShips;
     }
+    
 }

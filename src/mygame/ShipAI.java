@@ -10,12 +10,16 @@ import com.jme3.math.Vector3f;
 public class ShipAI {
 
     private Spaceship ship;
-
+ Vector3f coordinates = new Vector3f();
     public ShipAI(Spaceship ship) {
         this.ship = ship;
     }
 
     public void think() {
-        this.ship.moveDirection(Vector3f.UNIT_Z);
+if ( this.ship.seeShip()){
+    this.ship.moveTo(this.ship.getSeenShips().get(0));
+
+}
     }
+    
 }
