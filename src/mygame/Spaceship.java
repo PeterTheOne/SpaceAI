@@ -65,7 +65,7 @@ public class Spaceship {
         }
         this.moveState = MoveState.DIRECTION;
         this.velo = direction.normalize().mult(MAXSPEED);
-        this.shipModel.lookAt(getPos().add(velo.negate()), Vector3f.UNIT_Y);
+        this.focusDirection(direction);
     }
 
     public void moveTo(Vector3f dest) {
@@ -84,6 +84,9 @@ public class Spaceship {
     }
     public void focusTarget(Vector3f dest){
         this.shipModel.lookAt(this.getPos().subtract(dest).add(this.getPos()), Vector3f.UNIT_Y);
+    }
+    public void focusDirection(Vector3f direction){
+        this.shipModel.lookAt(this.getPos().add(direction.negate()), Vector3f.UNIT_Y);
     }
 
     public Vector3f getPos() {

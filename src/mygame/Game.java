@@ -2,11 +2,20 @@ package mygame;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.ZipLocator;
+import com.jme3.effect.ParticleEmitter;
+import com.jme3.effect.ParticleMesh;
 import com.jme3.font.BitmapText;
 import com.jme3.light.DirectionalLight;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import java.util.ArrayList;
+import com.jme3.effect.ParticleMesh;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Cylinder;
+
 
 /**
  *
@@ -41,6 +50,13 @@ public class Game extends SimpleApplication {
             Spaceship ship = newShip(randomStartPosition);
             ships.add(ship);
         }
+        
+             Cylinder c = new Cylinder(12,12,0.1f,10.0f,true);
+        Geometry geom = new Geometry("Cylinder", c);
+        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.Red);
+        geom.setMaterial(mat);
+        rootNode.attachChild(geom);
 
         // Display a line of text with a default font
         guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
@@ -61,8 +77,14 @@ public class Game extends SimpleApplication {
         gameLevel.setLocalTranslation(0, -5.2f, 0);
         gameLevel.setLocalScale(2);
         rootNode.attachChild(gameLevel);
+        
+        
+     
+        
 
     }
+ 
+    
 
     public void simpleUpdate(float tpf) {
         for (Spaceship ship : ships) {
