@@ -15,7 +15,7 @@ import com.jme3.effect.ParticleMesh;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Cylinder;
-
+import com.jme3.scene.Node;
 
 /**
  *
@@ -31,10 +31,20 @@ public class Game extends SimpleApplication {
     private ArrayList<Spaceship> ships = new ArrayList<Spaceship>();
 
     public Spaceship newShip(Vector3f pos, int team) {
+        Cylinder c = new Cylinder(12, 12, 0.1f, 1f, true);
+
+        Geometry laser = new Geometry("Cylinder", c);
+        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.Red);
+
+        laser.setMaterial(mat);
+
+
         Spatial spaceshipmodel = assetManager.loadModel("Models/shipA_OBJ/shipA_OBJ.j3o");
-        Spaceship ship = new Spaceship(spaceshipmodel, pos, team);
+        Spaceship ship = new Spaceship(spaceshipmodel, laser, rootNode, pos, team);
         spaceshipmodel.scale(0.1f);
         rootNode.attachChild(spaceshipmodel);
+        rootNode.attachChild(laser);
         return ship;
     }
 
@@ -45,18 +55,14 @@ public class Game extends SimpleApplication {
 
         // Create spaceships
         for (int i = 0; i < 10; i++) {
-            Vector3f randomStartPosition = new Vector3f((float) Math.random() * 100, 
+            Vector3f randomStartPosition = new Vector3f((float) Math.random() * 100,
                     (float) Math.random() * 100, (float) Math.random() * 100);
             Spaceship ship = newShip(randomStartPosition, i % 2);
             ships.add(ship);
         }
-        
-             Cylinder c = new Cylinder(12,12,0.1f,10.0f,true);
-        Geometry geom = new Geometry("Cylinder", c);
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Red);
-        geom.setMaterial(mat);
-        rootNode.attachChild(geom);
+
+
+
 
         // Display a line of text with a default font
         guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
@@ -77,18 +83,25 @@ public class Game extends SimpleApplication {
         gameLevel.setLocalTranslation(0, -5.2f, 0);
         gameLevel.setLocalScale(2);
         rootNode.attachChild(gameLevel);
-        
-        
-     
-        
+
+
+
+
 
     }
- 
-    
 
     public void simpleUpdate(float tpf) {
         for (Spaceship ship : ships) {
             ship.clearSeenShips();
+        }
+        ArrayList<Spaceship> spaceshipsToRemove = new ArrayList<Spaceship>();
+        for (Spaceship ship : ships) {
+            if (ship.getHealth() <= 0) {
+                spaceshipsToRemove.add(ship);
+            }
+        }
+        for (Spaceship ship : spaceshipsToRemove) {
+            ships.remove(ship);
         }
         for (int i = 0; i < ships.size(); i++) {
             Spaceship ship = ships.get(i);
@@ -99,6 +112,8 @@ public class Game extends SimpleApplication {
                     ship2.addSeenShip(ship);
                 }
             }
+        }
+        for (Spaceship ship : ships) {
             ship.update(tpf);
         }
     }

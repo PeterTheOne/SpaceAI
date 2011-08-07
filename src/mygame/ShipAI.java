@@ -20,5 +20,9 @@ public class ShipAI {
         if (this.ship.seeShipFriend()) {
             this.ship.moveTo(this.ship.getSeenShipsFriend().get(0));
         }
+        if (this.ship.seeShipEnemy()) {
+            int random = (int) (Math.random() * this.ship.getSeenShipsEnemy().size());
+            this.ship.attack(this.ship.getSeenShipsEnemy().get(random));
+        }
     }
 }
