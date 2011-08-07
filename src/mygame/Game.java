@@ -19,12 +19,11 @@ public class Game extends SimpleApplication {
         Game game = new Game();
         game.start();
     }
-    
     private ArrayList<Spaceship> ships = new ArrayList<Spaceship>();
 
-    public Spaceship newShip() {
+    public Spaceship newShip(Vector3f pos) {
         Spatial spaceshipmodel = assetManager.loadModel("Models/shipA_OBJ/shipA_OBJ.j3o");
-        Spaceship ship = new Spaceship(spaceshipmodel);
+        Spaceship ship = new Spaceship(spaceshipmodel, pos);
         spaceshipmodel.scale(0.1f);
         rootNode.attachChild(spaceshipmodel);
         return ship;
@@ -34,11 +33,12 @@ public class Game extends SimpleApplication {
     public void simpleInitApp() {
         // Set camera speed
         flyCam.setMoveSpeed(50f);
-        
+
         // Create spaceships
         for (int i = 0; i < 2; i++) {
-            Spaceship ship = newShip();
-            ship.moveDirection(new Vector3f(1, 2, 3));
+            Vector3f randomStartPosition = new Vector3f((float) Math.random() * 50, 
+                    (float) Math.random() * 50, (float) Math.random() * 50);
+            Spaceship ship = newShip(randomStartPosition);
             ships.add(ship);
         }
 

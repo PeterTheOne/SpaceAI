@@ -26,7 +26,12 @@ public class Spaceship {
     private final int MAXSPEED = 3;
 
     public Spaceship(Spatial shipModel) {
+        this(shipModel, new Vector3f());
+    }
+    
+    public Spaceship(Spatial shipModel, Vector3f pos) {
         this.shipModel = shipModel;
+        this.shipModel.setLocalTranslation(pos);
         this.velo = new Vector3f();
         this.dest = new Vector3f();
         this.moveState = MoveState.STOP;
@@ -38,7 +43,6 @@ public class Spaceship {
         if (moveState == MoveState.TARGET) {
             if (this.getPos().subtract(dest).length() > 0.01f) {
                 this.velo = dest.subtract(getPos()).normalize().mult(MAXSPEED);
-
             } else {
                 this.stop();
             }
@@ -55,17 +59,20 @@ public class Spaceship {
     }
 
     public void moveDirection(Vector3f direction) {
-        //TODO: fix, ship only flies in one direction
         if (direction.equals(Vector3f.ZERO)) {
             this.stop();
             return;
         }
         this.moveState = MoveState.DIRECTION;
         this.velo = direction.normalize().mult(MAXSPEED);
-        this.shipModel.lookAt(velo.add(shipModel.getWorldTranslation()).negate(), Vector3f.UNIT_Y);
+        this.shipModel.lookAt(getPos().add(velo.negate()), Vector3f.UNIT_Y);
     }
 
     public void moveTo(Vector3f dest) {
+        if (getPos().equals(dest)) {
+            this.stop();
+            return;
+        }
         this.moveState = MoveState.TARGET;
         this.shipModel.lookAt(dest.negate(), Vector3f.UNIT_Y);
     }
