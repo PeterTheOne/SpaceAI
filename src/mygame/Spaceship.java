@@ -22,14 +22,13 @@ public class Spaceship {
     private Vector3f dest;
     private ShipAI computer;
     private ArrayList<Spaceship> seenShips;
+    private ArrayList<Spaceship> seenShipsFriend;
+    private ArrayList<Spaceship> seenShipsEnemy;
+    private int team;
     
     private final int MAXSPEED = 3;
-
-    public Spaceship(Spatial shipModel) {
-        this(shipModel, new Vector3f());
-    }
     
-    public Spaceship(Spatial shipModel, Vector3f pos) {
+    public Spaceship(Spatial shipModel, Vector3f pos, int team) {
         this.shipModel = shipModel;
         this.shipModel.setLocalTranslation(pos);
         this.velo = new Vector3f();
@@ -37,6 +36,9 @@ public class Spaceship {
         this.moveState = MoveState.STOP;
         this.computer = new ShipAI(this);
         this.seenShips = new ArrayList<Spaceship>();
+        this.seenShipsFriend = new ArrayList<Spaceship>();
+        this.seenShipsEnemy = new ArrayList<Spaceship>();
+        this.team = team;
     }
 
     public void update(float tpf) {
@@ -89,6 +91,10 @@ public class Spaceship {
     public Vector3f getPos() {
         return this.shipModel.getLocalTranslation();
     }
+    
+    public int getTeam() {
+        return this.team;
+    }
 
     public Quaternion getOrientation() {
         return this.shipModel.getLocalRotation();
@@ -96,18 +102,41 @@ public class Spaceship {
 
     public void addSeenShip(Spaceship ship) {
         this.seenShips.add(ship);
+        if (ship.getTeam() == this.team) {
+            this.seenShipsFriend.add(ship);
+        } else {
+            this.seenShipsEnemy.add(ship);
+        }
     }
 
     public void clearSeenShips() {
         this.seenShips.clear();
+        this.seenShipsFriend.clear();
+        this.seenShipsEnemy.clear();
     }
 
     public boolean seeShip() {
         return !this.seenShips.isEmpty();
     }
 
+    public boolean seeShipFriend() {
+        return !this.seenShipsFriend.isEmpty();
+    }
+
+    public boolean seeShipEnemy() {
+        return !this.seenShipsEnemy.isEmpty();
+    }
+
     public ArrayList<Spaceship> getSeenShips() {
         return this.seenShips;
+    }
+
+    public ArrayList<Spaceship> getSeenShipsFriend() {
+        return this.seenShipsFriend;
+    }
+
+    public ArrayList<Spaceship> getSeenShipsEnemy() {
+        return this.seenShipsEnemy;
     }
     
 }
