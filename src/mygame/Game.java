@@ -2,20 +2,12 @@ package mygame;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.ZipLocator;
-import com.jme3.effect.ParticleEmitter;
-import com.jme3.effect.ParticleMesh;
 import com.jme3.font.BitmapText;
 import com.jme3.light.DirectionalLight;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
+import event.EventManager;
 import java.util.ArrayList;
-import com.jme3.effect.ParticleMesh;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Cylinder;
-import com.jme3.scene.Node;
 
 /**
  *
@@ -28,28 +20,17 @@ public class Game extends SimpleApplication {
         Game game = new Game();
         game.start();
     }
+    
     private ArrayList<Spaceship> ships = new ArrayList<Spaceship>();
-
-    public Spaceship newShip(Vector3f pos, int team) {
-        Cylinder c = new Cylinder(12, 12, 0.1f, 1f, true);
-
-        Geometry laser = new Geometry("Cylinder", c);
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Red);
-
-        laser.setMaterial(mat);
-
-
-        Spatial spaceshipmodel = assetManager.loadModel("Models/shipA_OBJ/shipA_OBJ.j3o");
-        Spaceship ship = new Spaceship(spaceshipmodel, laser, rootNode, pos, team);
-        spaceshipmodel.scale(0.1f);
-        rootNode.attachChild(spaceshipmodel);
-        rootNode.attachChild(laser);
-        return ship;
-    }
+    private ArrayList<Spaceship> shipsToRemove = new ArrayList<Spaceship>();
+    private EventManager evtManager;
+    private View view;
 
     @Override
     public void simpleInitApp() {
+        this.evtManager = new EventManager(false);
+        this.view = new View(this);
+        
         // Set camera speed
         flyCam.setMoveSpeed(50f);
 
@@ -57,12 +38,9 @@ public class Game extends SimpleApplication {
         for (int i = 0; i < 10; i++) {
             Vector3f randomStartPosition = new Vector3f((float) Math.random() * 100,
                     (float) Math.random() * 100, (float) Math.random() * 100);
-            Spaceship ship = newShip(randomStartPosition, i % 2);
+            Spaceship ship = new Spaceship(this, randomStartPosition, i % 2);
             ships.add(ship);
         }
-
-
-
 
         // Display a line of text with a default font
         guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
@@ -83,25 +61,18 @@ public class Game extends SimpleApplication {
         gameLevel.setLocalTranslation(0, -5.2f, 0);
         gameLevel.setLocalScale(2);
         rootNode.attachChild(gameLevel);
-
-
-
-
-
     }
 
+    @Override
     public void simpleUpdate(float tpf) {
+        this.evtManager.update();
+        
+        for (Spaceship ship : shipsToRemove) {
+            ships.remove(ship);
+        }
+        
         for (Spaceship ship : ships) {
             ship.clearSeenShips();
-        }
-        ArrayList<Spaceship> spaceshipsToRemove = new ArrayList<Spaceship>();
-        for (Spaceship ship : ships) {
-            if (ship.getHealth() <= 0) {
-                spaceshipsToRemove.add(ship);
-            }
-        }
-        for (Spaceship ship : spaceshipsToRemove) {
-            ships.remove(ship);
         }
         for (int i = 0; i < ships.size(); i++) {
             Spaceship ship = ships.get(i);
@@ -116,5 +87,13 @@ public class Game extends SimpleApplication {
         for (Spaceship ship : ships) {
             ship.update(tpf);
         }
+    }
+
+    public EventManager getEventManager() {
+        return this.evtManager;
+    }
+
+    void removeSpaceship(Spaceship ship) {
+        shipsToRemove.add(ship);
     }
 }

@@ -10,7 +10,6 @@ import com.jme3.math.Vector3f;
 public class ShipAI {
 
     private Spaceship ship;
-    Vector3f coordinates = new Vector3f();
 
     public ShipAI(Spaceship ship) {
         this.ship = ship;
