@@ -31,10 +31,10 @@ public class Spaceship {
     private ArrayList<Spaceship> seenShipsEnemy;
     private int team;
     private int health;
-    private int attackBuffer;
+    private float attackBuffer;
     
     private final int MAXSPEED = 3;
-    private final int ATTACKBUFFERSIZE = 300;
+    private final float ATTACKBUFFERSIZE = 0.5f;
 
     public Spaceship(Game game, Vector3f pos, int team) {
         this.game = game;
@@ -49,7 +49,7 @@ public class Spaceship {
         this.team = team;
         this.health = 100;
         this.attackBuffer = 0;
-        this.number = count++;
+        this.number = this.count++;
         this.name = "Spaceship#" + number;
         EventManager evtManager = this.game.getEventManager();
         evtManager.enqueueEvent(new SpaceshipCreatedEvent(this.name));
@@ -73,10 +73,6 @@ public class Spaceship {
         }
         if (attackBuffer > 0) {
             this.attackBuffer -= tpf;
-            //TODO: remove
-            /*if (attackBuffer < ATTACKBUFFERSIZE * 0.9f && rootNode.hasChild(laser)) {
-                rootNode.detachChild(laser);
-            }*/
         }
 
         this.pos = this.pos.add(this.velo.mult(tpf));
@@ -169,24 +165,16 @@ public class Spaceship {
     public void attack(Spaceship target) {
         if (this.attackBuffer <= 0) {
             this.attackBuffer = ATTACKBUFFERSIZE;
-            //TODO: remove
-            /*float length = target.getPos().subtract(this.getPos()).length();
-            Vector3f center = target.getPos().subtract(this.getPos()).mult(0.5f).add(this.getPos());
-            if (!rootNode.hasChild(laser)) {
-                rootNode.attachChild(laser);
-            }
-            laser.setLocalScale(1, 1, length);
-            laser.setLocalTranslation(center);
-            laser.lookAt(target.getPos(), Vector3f.UNIT_Y);*/
             target.hit();
+            this.game.addLaser(new Laser(this.game, this.name, target.getName()));
         }
     }
 
     public void hit() {
         this.health -= 3;
         if (this.health <= 0) {
-            EventManager evtManager = this.game.getEventManager();
             this.game.removeSpaceship(this);
+            EventManager evtManager = this.game.getEventManager();
             evtManager.enqueueEvent(new SpaceshipDestroyedEvent(this.name));
         }
     }
