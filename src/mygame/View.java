@@ -15,6 +15,7 @@ import com.jme3.scene.shape.Cylinder;
 import event.Event;
 import event.EventListener;
 import event.EventManager;
+import com.jme3.scene.shape.Sphere;
 
 
 /**
@@ -39,6 +40,7 @@ public class View implements EventListener {
         evtManager.addListener(this, SpaceshipMovedEvent.TYPE);
         evtManager.addListener(this, SpaceshipAttackEvent.TYPE);
         evtManager.addListener(this, LaserDestroyedEvent.TYPE);
+        evtManager.addListener(this, PlanetCreatedEvent.TYPE);
     }
 
     public void handleEvent(Event event) {
@@ -53,6 +55,9 @@ public class View implements EventListener {
         } else if (LaserDestroyedEvent.TYPE.equals(event.getType())){
             handleLaserDestroyedEvent((LaserDestroyedEvent) event);
         }
+        else if (PlanetCreatedEvent.TYPE.equals(event.getType())){
+            handlePlanetCreatedEvent((PlanetCreatedEvent) event);
+        }
     }
 
     private void handleSpaceshipCreatedEvent(SpaceshipCreatedEvent event) {
@@ -66,6 +71,17 @@ public class View implements EventListener {
         } else {
             //TODO: ouput error: "spaceship has allready been created"
         }
+    }
+    private void handlePlanetCreatedEvent (PlanetCreatedEvent event){
+          Sphere c = new Sphere(12,12,10);
+        Geometry planet = new Geometry(event.getPlanetName(), c);
+        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.Blue);
+        planet.setMaterial(mat);
+        planet.setName(event.getPlanetName());
+        planet.setLocalTranslation(event.getPos());
+            this.rootNode.attachChild(planet);
+            
     }
 
     private void handleSpaceshipDestroyedEvent(SpaceshipDestroyedEvent event) {

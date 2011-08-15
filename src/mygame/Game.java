@@ -27,6 +27,7 @@ public class Game extends SimpleApplication {
     private ArrayList<Laser> lasersToRemove = new ArrayList<Laser>();
     private EventManager evtManager;
     private View view;
+    private Environment env;
 
     @Override
     public void simpleInitApp() {
@@ -43,7 +44,10 @@ public class Game extends SimpleApplication {
             Spaceship ship = new Spaceship(this, randomStartPosition, i % 2);
             ships.add(ship);
         }
-
+        
+        env = new Environment(this);
+       
+        
         // Display a line of text with a default font
         guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
         BitmapText helloText = new BitmapText(guiFont, false);
