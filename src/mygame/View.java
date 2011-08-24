@@ -120,13 +120,18 @@ public class View implements EventListener {
 
     private void handleSpaceshipMovedEvent(SpaceshipMovedEvent event) {
         Node shipNode = (Node) this.rootNode.getChild(event.getSpaceshipName());
-        Node shipRotateNode = (Node) this.rootNode.getChild(event.getSpaceshipName() + "Rotate");        
-        if (shipNode != null && shipRotateNode != null) {
-            //shipRotateNode.lookAt(event.getSpaceshipPos(), Vector3f.UNIT_Y); //WTF!!!!!!!
+        if (shipNode != null) {
             shipNode.setLocalTranslation(event.getSpaceshipPos());
          
             ParticleEmitter fire = (ParticleEmitter) shipNode.getChild("fire");
             fire.setInitialVelocity(event.getVelocity().normalize().mult((float) 5));
+            
+            Node shipRotateNode = (Node) shipNode.getChild(event.getSpaceshipName() + "Rotate");        
+            if (shipRotateNode != null) {
+                shipRotateNode.lookAt(event.getSpaceshipPos().add(event.getVelocity()), Vector3f.UNIT_Y);
+            } else {
+                //TODO: output error: "spaceshipRotateNode not found, cannot be moved"
+            }
         } else {
             //TODO: output error: "spaceship not found, cannot be moved"
         }
@@ -153,7 +158,7 @@ public class View implements EventListener {
         laser.setLocalTranslation(new Vector3f(0, 0, length / 2f));
         Node laserNode = new Node("laser");
         laserNode.attachChild(laser);
-        laserNode.lookAt(targetPos, Vector3f.UNIT_Y);
+        laserNode.lookAt(targetPos.subtract(attackerPos), Vector3f.UNIT_Y);
         Node shipNode = (Node) this.rootNode.getChild(event.getSpaceshipAttackerName());
         shipNode.attachChild(laserNode);
     }
