@@ -13,7 +13,7 @@ import event.EventManager;
 class Laser {
     
     private float buffer;
-    private final float BUFFERSIZE = 0.3f;
+    private final float BUFFERSIZE = 1;
     
     private String name;
     private static int count = 0;

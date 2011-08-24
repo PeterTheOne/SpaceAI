@@ -34,7 +34,7 @@ public class Spaceship {
     private float attackBuffer;
     
     private final int MAXSPEED = 3;
-    private final float ATTACKBUFFERSIZE = 0.5f;
+    private final float ATTACKBUFFERSIZE = 2f;
 
     public Spaceship(Game game, Vector3f pos, int team) {
         this.game = game;
