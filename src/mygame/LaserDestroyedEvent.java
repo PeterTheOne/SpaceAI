@@ -11,14 +11,14 @@ class LaserDestroyedEvent extends Event {
     
     public static final EventType TYPE = new EventType("LaserDestroyed");
     
-    private String laserName;
+    private String spaceshipAttackerName;
 
-    public LaserDestroyedEvent(String laserName) {
-        this.laserName = laserName;
+    public LaserDestroyedEvent(String spaceshipAttackerName) {
+       this.spaceshipAttackerName =  spaceshipAttackerName;
     }
     
-    public String getLaserName() {
-        return this.laserName;
+    public String getSpaceshipAttackerName() {
+        return this.spaceshipAttackerName;
     }
 
     @Override

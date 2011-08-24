@@ -43,7 +43,7 @@ class Laser {
             this.buffer -= tpf;
         } else {
             EventManager evtManager = this.game.getEventManager();
-            LaserDestroyedEvent event = new LaserDestroyedEvent(this.name);
+            LaserDestroyedEvent event = new LaserDestroyedEvent(this.spaceshipAttackerName);
             evtManager.enqueueEvent(event);
             this.game.removeLaser(this);
         }

@@ -14,10 +14,11 @@ class SpaceshipMovedEvent extends Event {
     
     private String spaceshipName;
     private Vector3f spaceshipPos;
-
-    public SpaceshipMovedEvent(String spaceshipName, Vector3f spaceshipPos) {
+    private Vector3f velocity;
+    public SpaceshipMovedEvent(String spaceshipName, Vector3f spaceshipPos, Vector3f velocity) {
         this.spaceshipName = spaceshipName;
         this.spaceshipPos = spaceshipPos;
+        this.velocity = velocity;
     }
     
     public String getSpaceshipName() {
@@ -31,6 +32,9 @@ class SpaceshipMovedEvent extends Event {
     @Override
     public EventType getType() {
         return TYPE;
+    }
+    public Vector3f getVelocity(){
+        return this.velocity;
     }
     
 }

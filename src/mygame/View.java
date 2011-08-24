@@ -16,6 +16,8 @@ import event.Event;
 import event.EventListener;
 import event.EventManager;
 import com.jme3.scene.shape.Sphere;
+import com.jme3.effect.ParticleEmitter;
+import com.jme3.effect.ParticleMesh;
 
 
 /**
@@ -67,7 +69,32 @@ public class View implements EventListener {
             Spatial shipSpatial = assetManager.loadModel("Models/shipA_OBJ/shipA_OBJ.j3o");
             shipSpatial.setName(name);
             shipSpatial.scale(0.1f);
-            this.rootNode.attachChild(shipSpatial);
+            Node SpaceshipNode = new Node();
+            SpaceshipNode.setName(event.getSpaceshipName());
+            this.rootNode.attachChild(SpaceshipNode);
+            
+            SpaceshipNode.attachChild(shipSpatial);
+            // temporary
+             ParticleEmitter fire = new ParticleEmitter("Emitter", ParticleMesh.Type.Triangle, 30);
+    Material mat_red = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+    mat_red.setTexture("Texture", assetManager.loadTexture("Effects/Explosion/flame.png"));
+    fire.setMaterial(mat_red);
+    fire.setImagesX(2); fire.setImagesY(2); // 2x2 texture animation
+    fire.setEndColor(  new ColorRGBA(1f, 0f, 0f, 1f));   // red
+    fire.setStartColor(new ColorRGBA(1f, 1f, 0f, 0.5f)); // yellow
+    fire.setInitialVelocity(new Vector3f(0, 0, 10));
+    fire.setStartSize(1.5f);
+    fire.setEndSize(0.1f);
+    fire.setGravity(0);
+    fire.setLowLife(0.5f);
+    fire.setHighLife(3f);
+    fire.setVelocityVariation(0.3f);
+    fire.setName("fire");
+  SpaceshipNode.attachChild(fire);
+            //
+            
+            
+            
         } else {
             //TODO: ouput error: "spaceship has allready been created"
         }
@@ -91,10 +118,13 @@ public class View implements EventListener {
     }
 
     private void handleSpaceshipMovedEvent(SpaceshipMovedEvent event) {
-        Spatial shipSpatial = this.rootNode.getChild(event.getSpaceshipName());
-        if (shipSpatial != null) {
-            shipSpatial.lookAt(event.getSpaceshipPos(), Vector3f.UNIT_Y);
-            shipSpatial.setLocalTranslation(event.getSpaceshipPos());
+        Node shipNode = (Node) this.rootNode.getChild(event.getSpaceshipName());
+        
+        if (shipNode != null) {
+            shipNode.lookAt(event.getSpaceshipPos(), Vector3f.UNIT_Y);
+            shipNode.setLocalTranslation(event.getSpaceshipPos());
+            ParticleEmitter fire = (ParticleEmitter) shipNode.getChild("fire");
+            fire.setInitialVelocity(event.getVelocity().normalize().mult((float) 5));
         } else {
             //TODO: output error: "spaceship not found, cannot be moved"
         }
@@ -118,16 +148,20 @@ public class View implements EventListener {
         Vector3f targetPos = target.getWorldTranslation();
         
         float length = targetPos.subtract(attackerPos).length();
-        Vector3f centerPos = targetPos.subtract(attackerPos).mult(0.5f).add(attackerPos);
+        Vector3f centerPos = targetPos.subtract(attackerPos).mult(0.5f);
         laser.setLocalScale(1, 1, length);
-        laser.setLocalTranslation(centerPos);
-        laser.lookAt(targetPos, Vector3f.UNIT_Y);
-        laser.setName(event.getLaserName());
-        this.rootNode.attachChild(laser);
+      
+        
+        laser.setName("laser");
+       ((Node) this.rootNode.getChild(event.getSpaceshipAttackerName())).attachChild(laser);
+         laser.setLocalTranslation(centerPos);
+        
+        
     }
 
     private void handleLaserDestroyedEvent(LaserDestroyedEvent event) {
-        if (this.rootNode.detachChildNamed(event.getLaserName()) == -1) {
+        Node node = (Node) this.rootNode.getChild(event.getSpaceshipAttackerName());
+        if (node == null || node.detachChildNamed("laser") == -1) {
             //TODO: output error: "laser not found, cannot be removed"
         }
     }

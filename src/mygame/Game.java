@@ -8,6 +8,10 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import event.EventManager;
 import java.util.ArrayList;
+import com.jme3.effect.ParticleEmitter;
+import com.jme3.effect.ParticleMesh;
+import com.jme3.math.ColorRGBA;
+import com.jme3.material.Material;
 
 /**
  *
@@ -67,6 +71,10 @@ public class Game extends SimpleApplication {
         gameLevel.setLocalTranslation(0, -5.2f, 0);
         gameLevel.setLocalScale(2);
         rootNode.attachChild(gameLevel);
+        
+           
+ 
+        
     }
 
     @Override

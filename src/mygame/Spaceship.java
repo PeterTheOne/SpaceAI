@@ -53,7 +53,7 @@ public class Spaceship {
         this.name = "Spaceship#" + number;
         EventManager evtManager = this.game.getEventManager();
         evtManager.enqueueEvent(new SpaceshipCreatedEvent(this.name));
-        evtManager.enqueueEvent(new SpaceshipMovedEvent(this.name, this.pos));
+        evtManager.enqueueEvent(new SpaceshipMovedEvent(this.name, this.pos, this.velo));
     }
 
     public void update(float tpf) {
@@ -78,7 +78,7 @@ public class Spaceship {
         this.pos = this.pos.add(this.velo.mult(tpf));
         if (!this.velo.equals(Vector3f.ZERO)) {
             EventManager evtManager = this.game.getEventManager();
-            evtManager.enqueueEvent(new SpaceshipMovedEvent(this.name, this.pos));
+            evtManager.enqueueEvent(new SpaceshipMovedEvent(this.name, this.pos, this.velo));
         }
     }
 
@@ -185,5 +185,8 @@ public class Spaceship {
     
     public String getName() {
         return this.name;
+    }
+    public Vector3f getVelocity (){
+        return this.velo;
     }
 }
