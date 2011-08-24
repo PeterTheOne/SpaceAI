@@ -91,6 +91,7 @@ public class View implements EventListener {
     fire.setVelocityVariation(0.3f);
     fire.setName("fire");
   SpaceshipNode.attachChild(fire);
+  
             //
             
             
@@ -123,6 +124,7 @@ public class View implements EventListener {
         if (shipNode != null) {
             shipNode.lookAt(event.getSpaceshipPos(), Vector3f.UNIT_Y);
             shipNode.setLocalTranslation(event.getSpaceshipPos());
+         
             ParticleEmitter fire = (ParticleEmitter) shipNode.getChild("fire");
             fire.setInitialVelocity(event.getVelocity().normalize().mult((float) 5));
         } else {
