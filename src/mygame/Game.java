@@ -39,12 +39,12 @@ public class Game extends SimpleApplication {
         this.view = new View(this);
         
         // Set camera speed
-        flyCam.setMoveSpeed(50f);
+        flyCam.setMoveSpeed(300f);
 
         // Create spaceships
         for (int i = 0; i < 10; i++) {
-            Vector3f randomStartPosition = new Vector3f((float) Math.random() * 100,
-                    (float) Math.random() * 100, (float) Math.random() * 100);
+            Vector3f randomStartPosition = new Vector3f((0.5f - (float) Math.random()) * 500,
+                   ( 0.5f - (float) Math.random()) * 500, (0.5f - (float) Math.random()) * 500);
             Spaceship ship = new Spaceship(this, randomStartPosition, i % 2);
             ships.add(ship);
         }
@@ -65,12 +65,7 @@ public class Game extends SimpleApplication {
         sun.setDirection(new Vector3f(-0.1f, -0.7f, -1.0f));
         rootNode.addLight(sun);
 
-        // Load Town
-        assetManager.registerLocator("town.zip", ZipLocator.class.getName());
-        Spatial gameLevel = assetManager.loadModel("main.scene");
-        gameLevel.setLocalTranslation(0, -5.2f, 0);
-        gameLevel.setLocalScale(2);
-        rootNode.attachChild(gameLevel);
+    
         
            
  
@@ -95,7 +90,7 @@ public class Game extends SimpleApplication {
             Spaceship ship = ships.get(i);
             for (int j = i + 1; j < ships.size(); j++) {
                 Spaceship ship2 = ships.get(j);
-                if (ship2.getPos().subtract(ship.getPos()).length() < 100) {
+                if (ship2.getPos().subtract(ship.getPos()).length() < 400) {
                     ship.addSeenShip(ship2);
                     ship2.addSeenShip(ship);
                 }

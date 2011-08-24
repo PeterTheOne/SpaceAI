@@ -14,17 +14,14 @@ import java.util.ArrayList;
 public class Environment {
     private ArrayList<Planet> Planets;
     Game game;
-    private int size = 300;
+    private int size = 500;
     public Environment(Game game){
         this.game = game;
         Planets = new ArrayList<Planet>();
         for (int i =0;i<10;i++){
-            Vector3f randompos = new Vector3f((float) Math.random()*size,(float) Math.random()*size,(float) Math.random()*size);
+            Vector3f randompos = new Vector3f((0.5f - (float) Math.random())*size,(0.5f-(float) Math.random())*size,(0.5f-(float) Math.random())*size);
             Planets.add(new Planet(game,randompos));
         }
-       
-        Planet plan = new Planet (game, new Vector3f((float) Math.random()*size,(float) Math.random()*size,(float) Math.random()*size));
-        
         
     }
 }

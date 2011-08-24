@@ -100,10 +100,10 @@ public class View implements EventListener {
         }
     }
     private void handlePlanetCreatedEvent (PlanetCreatedEvent event){
-          Sphere c = new Sphere(12,12,10);
+          Sphere c = new Sphere(30,30,10);
         Geometry planet = new Geometry(event.getPlanetName(), c);
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Blue);
+        Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+        
         planet.setMaterial(mat);
         planet.setName(event.getPlanetName());
         planet.setLocalTranslation(event.getPos());
