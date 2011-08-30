@@ -1,5 +1,6 @@
-package mygame;
+package spaceAI;
 
+import spaceAI.entities.Spaceship;
 import com.jme3.math.Vector3f;
 
 /**

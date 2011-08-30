@@ -1,14 +1,14 @@
-package mygame;
+package spaceAI.event.events;
 
 import com.jme3.math.Vector3f;
-import event.Event;
-import event.EventType;
+import spaceAI.event.Event;
+import spaceAI.event.EventType;
 
 /**
  *
  * @author PeterTheOne
  */
-class SpaceshipMovedEvent extends Event {
+public class SpaceshipMovedEvent extends Event {
     
     public static final EventType TYPE = new EventType("SpaceshipMoved");
     

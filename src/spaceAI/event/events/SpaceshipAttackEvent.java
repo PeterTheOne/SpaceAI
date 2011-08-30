@@ -1,13 +1,13 @@
-package mygame;
+package spaceAI.event.events;
 
-import event.Event;
-import event.EventType;
+import spaceAI.event.Event;
+import spaceAI.event.EventType;
 
 /**
  *
  * @author PeterTheOne
  */
-class SpaceshipAttackEvent extends Event {
+public class SpaceshipAttackEvent extends Event {
     
     public static final EventType TYPE = new EventType("SpaceshipAttack");
     
@@ -15,7 +15,7 @@ class SpaceshipAttackEvent extends Event {
     private String spaceshipAttackerName;
     private String spaceshipTargetName;
 
-    SpaceshipAttackEvent(String laserName, String spaceshipAttackerName, String spaceshipTargetName) {
+    public SpaceshipAttackEvent(String laserName, String spaceshipAttackerName, String spaceshipTargetName) {
         this.laserName = laserName;
         this.spaceshipAttackerName = spaceshipAttackerName;
         this.spaceshipTargetName = spaceshipTargetName;

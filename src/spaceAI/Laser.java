@@ -2,15 +2,17 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mygame;
+package spaceAI;
 
-import event.EventManager;
+import spaceAI.event.events.LaserDestroyedEvent;
+import spaceAI.event.events.SpaceshipAttackEvent;
+import spaceAI.event.EventManager;
 
 /**
  *
  * @author PeterTheOne
  */
-class Laser {
+public class Laser {
     
     private float buffer;
     private final float BUFFERSIZE = 1;

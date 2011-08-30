@@ -1,17 +1,12 @@
-package mygame;
+package spaceAI;
 
+import spaceAI.entities.Spaceship;
 import com.jme3.app.SimpleApplication;
-import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.font.BitmapText;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Spatial;
-import event.EventManager;
+import spaceAI.event.EventManager;
 import java.util.ArrayList;
-import com.jme3.effect.ParticleEmitter;
-import com.jme3.effect.ParticleMesh;
-import com.jme3.math.ColorRGBA;
-import com.jme3.material.Material;
 
 /**
  *
@@ -112,11 +107,11 @@ public class Game extends SimpleApplication {
         return this.evtManager;
     }
 
-    void removeSpaceship(Spaceship ship) {
+    public void removeSpaceship(Spaceship ship) {
         shipsToRemove.add(ship);
     }
     
-    void removeLaser(Laser laser) {
+    public void removeLaser(Laser laser) {
         lasersToRemove.add(laser);
     }
 }

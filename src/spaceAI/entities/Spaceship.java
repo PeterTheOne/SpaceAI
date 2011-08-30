@@ -1,28 +1,30 @@
-package mygame;
+package spaceAI.entities;
 
+import spaceAI.event.events.SpaceshipMovedEvent;
 import com.jme3.math.Vector3f;
 import java.util.ArrayList;
-import event.EventManager;
+import spaceAI.Entity;
+import spaceAI.Game;
+import spaceAI.Laser;
+import spaceAI.ShipAI;
+import spaceAI.event.EventManager;
+import spaceAI.event.events.EntityDestroyedEvent;
 
 /**
  *
  * @author Luciph3r
  * @author PeterTheOne
  */
-public class Spaceship {
+public class Spaceship extends Entity {
 
     private enum MoveState {
 
         STOP, DIRECTION, TARGET
     };
-    private Game game;
-    
-    private String name;
     private static int count = 0;
-    private int number;
+    private int num;
     
     private MoveState moveState;
-    private Vector3f pos;
     private Vector3f velo;
     private Vector3f dest;
     private ShipAI computer;
@@ -37,8 +39,7 @@ public class Spaceship {
     private final float ATTACKBUFFERSIZE = 2f;
 
     public Spaceship(Game game, Vector3f pos, int team) {
-        this.game = game;
-        this.pos = pos;
+        super(game, "Spaceship", "Spaceship#" + count, pos);
         this.velo = new Vector3f();
         this.dest = new Vector3f();
         this.moveState = MoveState.STOP;
@@ -49,10 +50,8 @@ public class Spaceship {
         this.team = team;
         this.health = 100;
         this.attackBuffer = 0;
-        this.number = this.count++;
-        this.name = "Spaceship#" + number;
+        this.num = this.count++;
         EventManager evtManager = this.game.getEventManager();
-        evtManager.enqueueEvent(new SpaceshipCreatedEvent(this.name));
         evtManager.enqueueEvent(new SpaceshipMovedEvent(this.name, this.pos, this.velo));
     }
 
@@ -115,10 +114,6 @@ public class Spaceship {
         }
     }
 
-    public Vector3f getPos() {
-        return this.pos;
-    }
-
     public int getTeam() {
         return this.team;
     }
@@ -175,7 +170,7 @@ public class Spaceship {
         if (this.health <= 0) {
             this.game.removeSpaceship(this);
             EventManager evtManager = this.game.getEventManager();
-            evtManager.enqueueEvent(new SpaceshipDestroyedEvent(this.name));
+            evtManager.enqueueEvent(new EntityDestroyedEvent(this.name));
         }
     }
 
@@ -183,9 +178,6 @@ public class Spaceship {
         return health;
     }
     
-    public String getName() {
-        return this.name;
-    }
     public Vector3f getVelocity (){
         return this.velo;
     }

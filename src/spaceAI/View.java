@@ -1,9 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package mygame;
+package spaceAI;
 
+import spaceAI.event.events.LaserDestroyedEvent;
+import spaceAI.event.events.SpaceshipAttackEvent;
+import spaceAI.event.events.SpaceshipMovedEvent;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -12,14 +11,14 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Cylinder;
-import event.Event;
-import event.EventListener;
-import event.EventManager;
+import spaceAI.event.Event;
+import spaceAI.event.EventListener;
+import spaceAI.event.EventManager;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
+import spaceAI.event.events.EntityCreatedEvent;
+import spaceAI.event.events.EntityDestroyedEvent;
 
 
 /**
@@ -39,19 +38,18 @@ public class View implements EventListener {
         assetManager = this.game.getAssetManager();
         evtManager = this.game.getEventManager();
         
-        evtManager.addListener(this, SpaceshipCreatedEvent.TYPE);
-        evtManager.addListener(this, SpaceshipDestroyedEvent.TYPE);
+        evtManager.addListener(this, EntityCreatedEvent.TYPE);
+        evtManager.addListener(this, EntityDestroyedEvent.TYPE);
         evtManager.addListener(this, SpaceshipMovedEvent.TYPE);
         evtManager.addListener(this, SpaceshipAttackEvent.TYPE);
         evtManager.addListener(this, LaserDestroyedEvent.TYPE);
-        evtManager.addListener(this, PlanetCreatedEvent.TYPE);
     }
 
     public void handleEvent(Event event) {
-        if (SpaceshipCreatedEvent.TYPE.equals(event.getType())) {
-            handleSpaceshipCreatedEvent((SpaceshipCreatedEvent) event);
-        } else if (SpaceshipDestroyedEvent.TYPE.equals(event.getType())) {
-            handleSpaceshipDestroyedEvent((SpaceshipDestroyedEvent) event);
+        if (EntityCreatedEvent.TYPE.equals(event.getType())) {
+            handleEntityCreatedEvent((EntityCreatedEvent) event);
+        } else if (EntityDestroyedEvent.TYPE.equals(event.getType())) {
+            handleEntityDestroyedEvent((EntityDestroyedEvent) event);
         } else if (SpaceshipMovedEvent.TYPE.equals(event.getType())) {
             handleSpaceshipMovedEvent((SpaceshipMovedEvent) event);
         } else if (SpaceshipAttackEvent.TYPE.equals(event.getType())) {
@@ -59,22 +57,30 @@ public class View implements EventListener {
         } else if (LaserDestroyedEvent.TYPE.equals(event.getType())){
             handleLaserDestroyedEvent((LaserDestroyedEvent) event);
         }
-        else if (PlanetCreatedEvent.TYPE.equals(event.getType())){
-            handlePlanetCreatedEvent((PlanetCreatedEvent) event);
+    }
+    
+    private void handleEntityCreatedEvent(EntityCreatedEvent event) {
+        if (event.getEntityType().equals("Spaceship")) {
+            handleSpaceshipCreatedEvent(event);
+        } else if (event.getEntityType().equals("Planet")) {
+            handlePlanetCreatedEvent(event);
+        } else if (event.getEntityType().equals("Base")) {
+            //TODO: change
+            handlePlanetCreatedEvent(event);
         }
     }
 
-    private void handleSpaceshipCreatedEvent(SpaceshipCreatedEvent event) {
-        String name = event.getSpaceshipName();
+    private void handleSpaceshipCreatedEvent(EntityCreatedEvent event) {
+        String name = event.getEntityName();
         if (rootNode.getChild(name) == null) {
             //TODO: fix spaceship is turned backwards.
             Spatial shipSpatial = assetManager.loadModel("Models/zonovas gen 0bj/zonovas gen 0bj.j3o");
             shipSpatial.setName("ship");
             shipSpatial.scale(0.4f);
             Node spaceshipNode = new Node();
-            spaceshipNode.setName(event.getSpaceshipName());
+            spaceshipNode.setName(event.getEntityName());
             Node spaceshipRotateNode = new Node();
-            spaceshipRotateNode.setName(event.getSpaceshipName() + "Rotate");
+            spaceshipRotateNode.setName(event.getEntityName() + "Rotate");
             spaceshipRotateNode.attachChild(shipSpatial);
             spaceshipNode.attachChild(spaceshipRotateNode);
             this.rootNode.attachChild(spaceshipNode);
@@ -100,34 +106,42 @@ public class View implements EventListener {
             //TODO: ouput error: "spaceship has allready been created"
         }
     }
-    private void handlePlanetCreatedEvent (PlanetCreatedEvent event){
+    private void handlePlanetCreatedEvent (EntityCreatedEvent event){
           Sphere c = new Sphere(30,30,10);
-        Geometry planet = new Geometry(event.getPlanetName(), c);
+        Geometry planet = new Geometry(event.getEntityName(), c);
         Material mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
         
         planet.setMaterial(mat);
-        planet.setName(event.getPlanetName());
-        planet.setLocalTranslation(event.getPos());
+        planet.setName(event.getEntityName());
+        planet.setLocalTranslation(event.getEntityPos());
             this.rootNode.attachChild(planet);
             
     }
 
-    private void handleSpaceshipDestroyedEvent(SpaceshipDestroyedEvent event) {
-        if (this.rootNode.detachChildNamed(event.getSpaceshipName()) == -1) {
+    private void handleEntityDestroyedEvent(EntityDestroyedEvent event) {
+        if (this.rootNode.detachChildNamed(event.getEntityName()) == -1) {
             //TODO: output error: "laser not found, cannot be removed"
         }
     }
 
     private void handleSpaceshipMovedEvent(SpaceshipMovedEvent event) {
         Node shipNode = (Node) this.rootNode.getChild(event.getSpaceshipName());
-        Node shipRotateNode = (Node) this.rootNode.getChild(event.getSpaceshipName() + "Rotate");        
-        if (shipNode != null && shipRotateNode != null) {
-            shipRotateNode.getChild("ship").lookAt(event.getSpaceshipPos(), Vector3f.UNIT_Y);
 
+            
+        
+        if (shipNode != null) {
             shipNode.setLocalTranslation(event.getSpaceshipPos());
          
             ParticleEmitter fire = (ParticleEmitter) shipNode.getChild("fire");
-            fire.setInitialVelocity(event.getVelocity().normalize().mult((float) -10));
+            fire.setInitialVelocity(event.getVelocity().normalize().mult((float) 5));
+            
+            Node shipRotateNode = (Node) shipNode.getChild(event.getSpaceshipName() + "Rotate");        
+            if (shipRotateNode != null) {
+                shipRotateNode.lookAt(event.getSpaceshipPos().add(event.getVelocity()), Vector3f.UNIT_Y);
+            } else {
+                //TODO: output error: "spaceshipRotateNode not found, cannot be moved"
+            }
+
         } else {
             //TODO: output error: "spaceship not found, cannot be moved"
         }
@@ -154,7 +168,7 @@ public class View implements EventListener {
         laser.setLocalTranslation(new Vector3f(0, 0, length / 2f));
         Node laserNode = new Node("laser");
         laserNode.attachChild(laser);
-        laserNode.lookAt(targetPos, Vector3f.UNIT_Y);
+        laserNode.lookAt(targetPos.subtract(attackerPos), Vector3f.UNIT_Y);
         Node shipNode = (Node) this.rootNode.getChild(event.getSpaceshipAttackerName());
         shipNode.attachChild(laserNode);
     }

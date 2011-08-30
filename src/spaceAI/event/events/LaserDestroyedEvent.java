@@ -1,13 +1,13 @@
-package mygame;
+package spaceAI.event.events;
 
-import event.Event;
-import event.EventType;
+import spaceAI.event.Event;
+import spaceAI.event.EventType;
 
 /**
  *
  * @author PeterTheOne
  */
-class LaserDestroyedEvent extends Event {
+public class LaserDestroyedEvent extends Event {
     
     public static final EventType TYPE = new EventType("LaserDestroyed");
     
