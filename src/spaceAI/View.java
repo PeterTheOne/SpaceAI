@@ -133,7 +133,7 @@ public class View implements EventListener {
             shipNode.setLocalTranslation(event.getSpaceshipPos());
          
             ParticleEmitter fire = (ParticleEmitter) shipNode.getChild("fire");
-            fire.setInitialVelocity(event.getVelocity().normalize().mult((float) 5));
+            fire.setInitialVelocity(event.getVelocity().normalize().mult((float) -8));
             
             Node shipRotateNode = (Node) shipNode.getChild(event.getSpaceshipName() + "Rotate");        
             if (shipRotateNode != null) {
