@@ -68,9 +68,9 @@ public class View implements EventListener {
         String name = event.getSpaceshipName();
         if (rootNode.getChild(name) == null) {
             //TODO: fix spaceship is turned backwards.
-            Spatial shipSpatial = assetManager.loadModel("Models/shipA_OBJ/shipA_OBJ.j3o");
+            Spatial shipSpatial = assetManager.loadModel("Models/zonovas gen 0bj/zonovas gen 0bj.j3o");
             shipSpatial.setName("ship");
-            shipSpatial.scale(0.1f);
+            shipSpatial.scale(0.4f);
             Node spaceshipNode = new Node();
             spaceshipNode.setName(event.getSpaceshipName());
             Node spaceshipRotateNode = new Node();
@@ -91,11 +91,11 @@ public class View implements EventListener {
             fire.setStartSize(1.5f);
             fire.setEndSize(0.1f);
             fire.setGravity(0);
-            fire.setLowLife(0.5f);
-            fire.setHighLife(3f);
-            fire.setVelocityVariation(0.3f);
+            fire.setLowLife(1f);
+            fire.setHighLife(5f);
+            fire.setVelocityVariation(0.2f);
             fire.setName("fire");
-            spaceshipRotateNode.attachChild(fire);
+            spaceshipNode.attachChild(fire);
         } else {
             //TODO: ouput error: "spaceship has allready been created"
         }
@@ -122,11 +122,12 @@ public class View implements EventListener {
         Node shipNode = (Node) this.rootNode.getChild(event.getSpaceshipName());
         Node shipRotateNode = (Node) this.rootNode.getChild(event.getSpaceshipName() + "Rotate");        
         if (shipNode != null && shipRotateNode != null) {
-            //shipRotateNode.lookAt(event.getSpaceshipPos(), Vector3f.UNIT_Y); //WTF!!!!!!!
+            shipRotateNode.getChild("ship").lookAt(event.getSpaceshipPos(), Vector3f.UNIT_Y);
+
             shipNode.setLocalTranslation(event.getSpaceshipPos());
          
             ParticleEmitter fire = (ParticleEmitter) shipNode.getChild("fire");
-            fire.setInitialVelocity(event.getVelocity().normalize().mult((float) 5));
+            fire.setInitialVelocity(event.getVelocity().normalize().mult((float) -10));
         } else {
             //TODO: output error: "spaceship not found, cannot be moved"
         }
