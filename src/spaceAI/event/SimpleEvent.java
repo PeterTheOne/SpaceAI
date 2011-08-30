@@ -27,7 +27,7 @@
  THE SOFTWARE.
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 */
-package event;
+package spaceAI.event;
 
 /**
  *
@@ -38,7 +38,44 @@ package event;
  * @author Roman Divotkey
  * @author PeterTheOne
  */
-public interface EventListener {
 
-    public void handleEvent(Event event);
+/**
+ * A rudimental event without any data. The only significant information of
+ * this event is its {@code EventType}. A {@code SimpleEvent} can
+ * be used to avoid creation of new event classes that does hold additional
+ * information.
+ * 
+ * <hr>
+ * Usage Example:
+ * <pre>
+ * SimpleEvent myEvent = new SimpleEvent( new EventType("OneMinuteLeft") );
+ * evtMngr.enqueueEvent( myEvent );
+ * </pre>
+ * 
+ * or even shorter but less illustrative:
+ * 
+ * <pre>
+ * evtMngr.enqueueEvent( new SimpleEvent( new EventType("OneMinuteLeft") ) );
+ * </pre>
+ * 
+ * @see EventTyp
+ * @see EventManager
+ */
+public class SimpleEvent extends Event {
+
+    private EventType type;
+
+    /**
+     * Create a new instance with the specified {@code EventType}.
+     * 
+     * @param type {@code EventType} of this instance.
+     */
+    public SimpleEvent(EventType type) {
+        this.type = type;
+    }
+
+    @Override
+    public EventType getType() {
+        return this.type;
+    }
 }

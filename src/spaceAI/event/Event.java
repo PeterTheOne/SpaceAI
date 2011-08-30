@@ -27,7 +27,7 @@
  THE SOFTWARE.
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 */
-package event;
+package spaceAI.event;
 
 /**
  *
@@ -38,70 +38,22 @@ package event;
  * @author Roman Divotkey
  * @author PeterTheOne
  */
-public class EventType {
+public abstract class Event {
 
-    // Members
-    private int hashCode;
-    private String name;
+    /**
+     * Returns the type of this event.
+     * 
+     * @return <code>EventType</code> of this event.
+     */
+    public abstract EventType getType();
 
-    // Methods
-    public EventType(String name) {
-        if (name == null) {
-            throw new NullPointerException("name of entity type must not be NULL");
-        }
-
-        this.name = name;
-
-        // use only lower case letters to generate hashcode to avoid misspelled entity type names
-        this.hashCode = name.toLowerCase().hashCode();
-    }
-
-    public int getId() {
-        return this.hashCode;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public int hashCode() {
-        return hashCode;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (obj == null) {
-            return false;
-        }
-
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-
-        EventType other = (EventType) obj;
-        if (this.hashCode != other.hashCode()) {
-            return false;
-        }
-
-        // also very unlikely equal strings could result in the same hash code,
-        // let's test this only in 'debug' mode
-        assert (equalNames(other));
-
-        return true;
-    }
-
-    private boolean equalNames(EventType other) {
-        if (this.name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        }
-
-        return this.name.equals(other.name);
+    /** 
+     * Tests if this event is of given event type.
+     * 
+     * @param type {@code EventType} to be tested.
+     * @return {@code true} if this event is of given type, {@code false} otherwise.
+     */
+    public boolean isOfType(EventType type) {
+        return getType().equals(type);
     }
 }

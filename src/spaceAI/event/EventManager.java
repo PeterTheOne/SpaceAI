@@ -27,7 +27,7 @@
  THE SOFTWARE.
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 */
-package event;
+package spaceAI.event;
 
 import java.util.ArrayList;
 import java.util.Collection;
