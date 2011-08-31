@@ -25,6 +25,7 @@ public abstract class Entity {
         this.name = name;
         this.pos = pos;
         
+        //TODO: enqueue Event in a setUp method.
         EventManager evtManager = this.game.getEventManager();
         evtManager.enqueueEvent(new EntityCreatedEvent(this.type, this.name, this.pos));
     }
