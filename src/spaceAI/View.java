@@ -1,6 +1,5 @@
 package spaceAI;
 
-import spaceAI.event.events.LaserDestroyedEvent;
 import spaceAI.event.events.SpaceshipAttackEvent;
 import spaceAI.event.events.SpaceshipMovedEvent;
 import com.jme3.asset.AssetManager;
@@ -17,6 +16,7 @@ import spaceAI.event.EventManager;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
+import java.util.ArrayList;
 import spaceAI.event.events.EntityCreatedEvent;
 import spaceAI.event.events.EntityDestroyedEvent;
 
@@ -27,10 +27,25 @@ import spaceAI.event.events.EntityDestroyedEvent;
  */
 public class View implements EventListener {
     
+    private class LaserPair {
+        
+        private final float LASERBUFFERSIZE = 1f;
+        
+        public String attackerName;
+        public float buffer;
+        
+        public LaserPair(String attackerName) {
+            this.attackerName = attackerName;
+            this.buffer = LASERBUFFERSIZE;
+        }
+    }
+    
     private Game game;
     private Node rootNode;
     private AssetManager assetManager;
     private EventManager evtManager;
+    
+    private ArrayList<LaserPair> laserBuffers;
     
     public View(Game game) {
         this.game = game;
@@ -42,7 +57,8 @@ public class View implements EventListener {
         evtManager.addListener(this, EntityDestroyedEvent.TYPE);
         evtManager.addListener(this, SpaceshipMovedEvent.TYPE);
         evtManager.addListener(this, SpaceshipAttackEvent.TYPE);
-        evtManager.addListener(this, LaserDestroyedEvent.TYPE);
+        
+        laserBuffers = new ArrayList<LaserPair>();
     }
 
     public void handleEvent(Event event) {
@@ -54,8 +70,6 @@ public class View implements EventListener {
             handleSpaceshipMovedEvent((SpaceshipMovedEvent) event);
         } else if (SpaceshipAttackEvent.TYPE.equals(event.getType())) {
             handleSpaceshipAttackEvent((SpaceshipAttackEvent) event);
-        } else if (LaserDestroyedEvent.TYPE.equals(event.getType())){
-            handleLaserDestroyedEvent((LaserDestroyedEvent) event);
         }
     }
     
@@ -154,6 +168,9 @@ public class View implements EventListener {
             return;
             //TODO: output error: "spaceship not found, cannot be attacked"
         }
+        
+        laserBuffers.add(new LaserPair(event.getSpaceshipAttackerName()));
+        
         Vector3f attackerPos = attacker.getWorldTranslation();
         Vector3f targetPos = target.getWorldTranslation();
         
@@ -172,11 +189,21 @@ public class View implements EventListener {
         Node shipNode = (Node) this.rootNode.getChild(event.getSpaceshipAttackerName());
         shipNode.attachChild(laserNode);
     }
-
-    private void handleLaserDestroyedEvent(LaserDestroyedEvent event) {
-        Node node = (Node) this.rootNode.getChild(event.getSpaceshipAttackerName());
-        if (node == null || node.detachChildNamed("laser") == -1) {
-            //TODO: output error: "laser not found, cannot be removed"
+    
+    public void update(float tpf) {
+        ArrayList<LaserPair> toRemove = new ArrayList<LaserPair>();
+        for (LaserPair entry : laserBuffers) {
+            entry.buffer = entry.buffer - tpf;
+            if (entry.buffer < 0) {
+                toRemove.add(entry);
+                Node node = (Node) this.rootNode.getChild(entry.attackerName);
+                if (node == null || node.detachChildNamed("laser") == -1) {
+                    //TODO: output error: "laser not found, cannot be removed"
+                }
+            }
+        }
+        for (LaserPair entry : toRemove) {
+            laserBuffers.remove(entry);
         }
     }
 }

@@ -22,8 +22,6 @@ public class Game extends SimpleApplication {
     
     private ArrayList<Spaceship> ships = new ArrayList<Spaceship>();
     private ArrayList<Spaceship> shipsToRemove = new ArrayList<Spaceship>();
-    private ArrayList<Laser> lasers = new ArrayList<Laser>();
-    private ArrayList<Laser> lasersToRemove = new ArrayList<Laser>();
     private EventManager evtManager;
     private View view;
     private Environment env;
@@ -70,12 +68,10 @@ public class Game extends SimpleApplication {
     @Override
     public void simpleUpdate(float tpf) {
         this.evtManager.update();
+        this.view.update(tpf);
         
         for (Spaceship ship : shipsToRemove) {
             ships.remove(ship);
-        }
-        for (Laser laser : lasersToRemove) {
-            lasers.remove(laser);
         }
         
         for (Spaceship ship : ships) {
@@ -94,13 +90,6 @@ public class Game extends SimpleApplication {
         for (Spaceship ship : ships) {
             ship.update(tpf);
         }
-        for (Laser laser : lasers) {
-            laser.update(tpf);
-        }
-    }
-    
-    public void addLaser(Laser laser) {
-        lasers.add(laser);
     }
 
     public EventManager getEventManager() {
@@ -109,9 +98,5 @@ public class Game extends SimpleApplication {
 
     public void removeSpaceship(Spaceship ship) {
         shipsToRemove.add(ship);
-    }
-    
-    public void removeLaser(Laser laser) {
-        lasersToRemove.add(laser);
     }
 }

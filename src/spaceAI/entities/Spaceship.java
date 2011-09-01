@@ -5,10 +5,10 @@ import com.jme3.math.Vector3f;
 import java.util.ArrayList;
 import spaceAI.Entity;
 import spaceAI.Game;
-import spaceAI.Laser;
 import spaceAI.ShipAI;
 import spaceAI.event.EventManager;
 import spaceAI.event.events.EntityDestroyedEvent;
+import spaceAI.event.events.SpaceshipAttackEvent;
 
 /**
  *
@@ -161,7 +161,9 @@ public class Spaceship extends Entity {
         if (this.attackBuffer <= 0) {
             this.attackBuffer = ATTACKBUFFERSIZE;
             target.hit();
-            this.game.addLaser(new Laser(this.game, this.name, target.getName()));
+            EventManager evtManager = this.game.getEventManager();
+            String laserName = this.name + "vs" + target.getName();
+            evtManager.enqueueEvent(new SpaceshipAttackEvent(laserName, this.name, target.getName()));
         }
     }
 
